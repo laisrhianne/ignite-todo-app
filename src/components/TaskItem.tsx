@@ -1,6 +1,7 @@
 import React, {useState, useRef, useEffect} from 'react';
 import { View, TouchableOpacity, Text, Image, StyleSheet, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import penIcon from '../assets/icons/pen/pen.png'
 import trashIcon from '../assets/icons/trash/trash.png'
 
 export interface Task {
@@ -72,13 +73,28 @@ export function TaskItem({task, index, toggleTaskDone, removeTask, editTask} : T
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity
-        testID={`trash-${index}`}
-        style={{ paddingHorizontal: 24 }}
-        onPress={() => removeTask(task.id)}
-      >
-        <Image source={trashIcon} />
-      </TouchableOpacity>
+      <View style={styles.iconsContainer}>
+        {editMode ? (
+          <TouchableOpacity
+            onPress={handleCancelEditing}
+          >
+            <Icon name='x' size={24} color='#B2B2B2' />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={handleStartEditing}>
+            <Image source={penIcon} />
+          </TouchableOpacity>
+        )}
+        <View style={styles.iconDivider} />
+        <TouchableOpacity
+          testID={`trash-${index}`}
+          style={{ paddingHorizontal: 24, opacity: editMode ? 0.2 : 1 }}
+          onPress={() => removeTask(task.id)}
+          disabled={editMode}
+        >
+          <Image source={trashIcon} />
+        </TouchableOpacity>
+      </View>
     </>
   );
 };
@@ -120,5 +136,15 @@ const styles = StyleSheet.create({
     color: '#1DB863',
     textDecorationLine: 'line-through',
     fontFamily: 'Inter-Medium'
+  },
+  iconDivider: {
+    width: 1,
+    height: 24,
+    backgroundColor: 'rgba(196, 196, 196, 0.24)',
+    marginLeft: 24
+  },
+  iconsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around'
   }
 });
